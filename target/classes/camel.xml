@@ -1,0 +1,50 @@
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <bean id="helloWorld" class="camel.HelloWorld"/>
+
+    <context:property-placeholder location="classpath:config.properties"/>
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+
+
+        <!-- You can use a <packages> element for each root package to search for Java routes -->
+        <packageScan>
+            <package>org.foo.bar</package>
+        </packageScan>
+
+        <!-- You can use Spring XML syntax to define the routes here using the <route> element -->
+        <route>
+            <description>queueNameWl</description>
+            <from uri="activemq:ly-MQ"/>
+
+            <bean ref="helloWorld" method="camelOut"/>
+            <!--<to uri="log:helloworld?showExchangeId=true"/>-->
+        </route>
+
+
+    </camelContext>
+
+    <!--
+       Lets configure some Camel endpoints
+
+       http://camel.apache.org/components.html
+    -->
+
+    <!-- configure the camel activemq component to use the current broker -->
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" >
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="vm://localhost?create=true&amp;waitForStart=10000"/>
+                <property name="userName" value="admin"/>
+                <property name="password" value="admin"/>
+            </bean>
+        </property>
+    </bean>
+
+
+</beans>

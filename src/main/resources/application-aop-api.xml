@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+        <bean id="afterRetuningAdvice" class="aop.api.AfterRetuningAdviceImpl"/>
+
+        <bean id="beforeAdvice" class="aop.api.BeforeAdvice"/>
+
+        <bean id="methodeInterceptor" class="aop.api.MethodeInterceptorImpl"/>
+
+        <bean id="throwsAdvice" class="aop.api.ThrowsAdvice"/>
+
+        <bean id="bizLogicImplTarget" class="aop.api.BizLogicImpl"/>
+
+
+        <bean id="pointcutBean" class="org.springframework.aop.support.NameMatchMethodPointcut">
+            <property name="mappedNames">
+                <list>
+                    <value>sa*</value>
+                </list>
+            </property>
+        </bean>
+
+
+        <bean id="defaultAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+            <property name="advice" ref="beforeAdvice"/>
+            <property name="pointcut" ref="pointcutBean"/>
+        </bean>
+
+        <bean id="bizLogicImpl" class="org.springframework.aop.framework.ProxyFactoryBean">
+            <property name="target">
+                <ref bean="bizLogicImplTarget"/>
+            </property>
+
+            <property name="interceptorNames">
+                <list>
+                    <value>afterRetuningAdvice</value>
+                    <value>beforeAdvice</value>
+                    <value>methodeInterceptor</value>
+                    <value>throwsAdvice</value>
+                </list>
+            </property>
+        </bean>
+</beans>

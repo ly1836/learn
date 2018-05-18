@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.models.UsersMapper">
+    <resultMap id="resultUsersMap" type="Users">
+        <result property="id" column="id"/>
+        <result property="username" column="user_name"/>
+        <result property="mobile" column="mobile"/>
+        <collection property="posts" column="userid" ofType="mybatis.models.Post">
+            <result property="id" column="post_id" javaType="int" jdbcType="INTEGER"/>
+            <result property="title" column="title" javaType="string" jdbcType="VARCHAR"/>
+            <result property="content" column="content" javaType="string" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUser" resultMap="resultUsersMap" parameterType="int">
+        select u.*,p.* from users u,post p where u.id = p.userid and id = #{user_id}
+    </select>
+
+</mapper>
